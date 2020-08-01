@@ -41,7 +41,7 @@
 <div class="container-fluid mt-3" style="font-size: 1.5em;">
 
     <div class="yatch">
-        <table border="3" style="line-height: 50px;">
+        <table border="3" class="center" style="line-height: 50px;">
             <thead>
             <tr class="tr-players">
                 <th class="small text-muted" onclick="eraser()">[R]</th>
@@ -277,7 +277,7 @@
             $(`.tr-subtotal > .${player}`).html('OK!')
             $(`.tr-bonus > .${player}`).html(35).addClass('gold')
         } else {
-            $(`.tr-subtotal > .${player}`).html(to_bonus)
+            $(`.tr-subtotal > .${player}`).html(`${number_score} / 63`)
             $(`.tr-bonus > .${player}`).html(0).removeClass('gold')
         }
 
@@ -348,15 +348,13 @@
     function initial_load() {
         players.forEach(function (playerName) {
             Object.keys(cols).forEach(function (col) {
-                var additional_attr = ""
-
                 if (col === "tr-players") {
-                    $("." + col).append(`<th onclick="type_dice('${playerName}')"> &nbsp; ${playerName} &nbsp; </th>`);
+                    $("." + col).append(`<th class="center" onclick="type_dice('${playerName}')"> &nbsp; ${playerName} &nbsp; </th>`);
                     return false;
                 }
 
                 if (col === "tr-subtotal") {
-                    $("." + col).append(`<td class="center ${playerName}">-63</td>`);
+                    $("." + col).append(`<td class="center ${playerName}">0 / 63</td>`);
                     return false;
                 }
 
@@ -402,6 +400,7 @@
 
     function type_dice(playerName) {
         wipe_pseudo();
+        eraserMode = false;
 
         currentSelectPlayer = playerName;
         currentDice = "";
