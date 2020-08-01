@@ -36,6 +36,10 @@
         background-color: gold !important;
         font-weight: bold;
     }
+
+    .changedAlert {
+        background-color: aquamarine;
+    }
 </style>
 
 <div class="container-fluid mt-3" style="font-size: 1.5em;">
@@ -273,11 +277,16 @@
         })
 
         var to_bonus = number_score - 63
+
         if (to_bonus >= 0) {
             $(`.tr-subtotal > .${player}`).html('OK!')
             $(`.tr-bonus > .${player}`).html(35).addClass('gold')
         } else {
-            $(`.tr-subtotal > .${player}`).html(`${number_score} / 63`)
+            if ($(`.tr-subtotal > .${player}`).hasClass('subMod'))
+                $(`.tr-subtotal > .${player}`).html(`${to_bonus} / 0`)
+            else
+                $(`.tr-subtotal > .${player}`).html(`${number_score} / 63`)
+
             $(`.tr-bonus > .${player}`).html(0).removeClass('gold')
         }
 
@@ -354,7 +363,7 @@
                 }
 
                 if (col === "tr-subtotal") {
-                    $("." + col).append(`<td class="center ${playerName}">0 / 63</td>`);
+                    $("." + col).append(`<td onclick="changeSubtotalMod('${playerName}')" class="center ${playerName}">0 / 63</td>`);
                     return false;
                 }
 
@@ -374,6 +383,20 @@
                 $("." + col).append(`<td class="center score ${playerName} ${b}" onclick="board_click('${playerName}', '${col.split('-')[1]}')"></td>`);
             });
         });
+    }
+
+    function changeSubtotalMod(playername) {
+        var s = $(`.tr-subtotal > .${playername}`)
+        if (s.hasClass('subMod')) {
+            s.removeClass('subMod')
+        } else {
+            s.addClass('subMod')
+        }
+
+        s.addClass("changedAlert")
+        setTimeout(function () {
+            s.removeClass("changedAlert")
+        }, 500)
     }
 
     function diceInput() {
@@ -410,7 +433,7 @@
         add_pseudo(playerName);
     }
 
-    function eraser(){
+    function eraser() {
         eraserMode = true;
         changeText("지울 칸을 선택하세요.")
     }
@@ -419,6 +442,7 @@
         if (eraserMode) {
             $(`.tr-${type} > .${playerName}`).html("").removeClass('mark-score')
             changeText(`${playerName}의 ${cols['tr-' + type].translate}칸을 지웠습니다. 플레이어를 선택하십시오.`)
+            calc_and_display(playerName);
             eraserMode = false;
             return;
         }
@@ -450,7 +474,7 @@
             $(`.tr-${type} > .${playerName}`).html(`${calc_result}`).addClass('mark-score');
             changeText(`${playerName}, ${cols['tr-' + type].translate}에 ${calc_result}점, 플레이어를 선택하십시오.`);
 
-            if(type === "yacht" && calc_result > 0){
+            if (type === "yacht" && calc_result > 0) {
                 $(`.tr-${type} > .${playerName}`).addClass('gold');
             }
         }
