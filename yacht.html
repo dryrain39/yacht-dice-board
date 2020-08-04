@@ -189,11 +189,12 @@
             });
 
             Object.keys(counts).forEach(function (key) {
-                if (counts[key] === 3)
+                if (counts[key] === 3 || counts[key] === 5)
                     check_three = true
 
-                if (counts[key] === 2)
+                if (counts[key] === 2 || counts[key] === 5)
                     check_two = true
+
             })
 
             return check_three && check_two ? dice.reduce((a, b) => a + b, 0) : 0;
